@@ -1,21 +1,38 @@
 package ru.cloud.storage.server;
 
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.sql.*;
-import java.util.HashMap;
+import java.util.Properties;
 
-public class SQLServer {
+public class DBService {
     static Connection connection = null;
+    private String dbServer;
+    private int dbPort;
+    private String dbName;
+    private String dbUser;
+    private String dbPassword;
 
-    public void connect() throws ClassNotFoundException, SQLException, IllegalAccessException, InstantiationException {
+    public void connect() throws ClassNotFoundException, IllegalAccessException, InstantiationException {
         Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
 
-        //TODO использовать Properties
-        String dbServer = "localhost";
-        String dbName = "cloudstorage";
-        String dbUser = "root";
-        String dbPassword = "Qwerty123";
+        try (Reader in = new InputStreamReader(this.getClass().getResourceAsStream("/db.properties"))) {
+            Properties properties = new Properties();
+            properties.load(in);
+            dbServer = properties.getProperty("dbServerAddr");
+            dbPort = Integer.parseInt(properties.getProperty("dbServerPort"));
+            dbName = properties.getProperty("dbName");
+            dbUser = properties.getProperty("dbUser");
+            dbPassword = properties.getProperty("dbPassword");
+            String conURL = "jdbc:mysql://" + dbServer + ":" + dbPort + "/" + dbName +
+                    "?verifyServerCertificate=false&useSSL=true" +
+                    "&useLegacyDatetimeCode=false" +
+                    "&serverTimezone=UTC";
+            connection = DriverManager.getConnection(conURL, dbUser, dbPassword);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        connection = DriverManager.getConnection("jdbc:mysql://"+ dbServer +"/"+ dbName +"?user="+ dbUser +"&password="+ dbPassword);
     }
 
     public void disconnect(){
@@ -26,7 +43,7 @@ public class SQLServer {
         }
     }
 
-    public void createTable() throws SQLException {
+    void createTable() throws SQLException {
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS `cloudstorage`.`users` (\n" +
                     "  `id` INT NOT NULL AUTO_INCREMENT,\n" +
@@ -38,7 +55,7 @@ public class SQLServer {
         }
     }
 
-    public boolean userExists(String username) throws SQLException {
+    boolean userExists(String username) throws SQLException {
         //TODO вынести тексты запросов в константы
         PreparedStatement ps = connection.prepareStatement("SELECT username FROM cloudstorage.users WHERE users.username = ?;");
         ps.setString(1, username);
@@ -62,9 +79,19 @@ public class SQLServer {
 
     }
 
-    public void getUserData() throws SQLException {
-        PreparedStatement ps = connection.prepareStatement("SELECT * FROM cloudstorage.users WHERE users.username = ?;");
+    int getUserId(String login) throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("SELECT id FROM cloudstorage.users WHERE users.username = ?");
+        ps.setString(1, login);
         ResultSet rs = ps.executeQuery();
+        rs.next();
+        return rs.getInt("id");
+    }
 
+    byte[] getPassword(String login) throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("SELECT password FROM cloudstorage.users WHERE users.username = ?");
+        ps.setString(1, login);
+        ResultSet rs = ps.executeQuery();
+        rs.next();
+        return rs.getBytes("password");
     }
 }

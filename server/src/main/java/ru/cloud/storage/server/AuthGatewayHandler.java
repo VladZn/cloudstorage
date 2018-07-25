@@ -18,13 +18,24 @@ public class AuthGatewayHandler extends ChannelInboundHandlerAdapter {
         if (!authorized){
             if (msg instanceof AuthMsg){
                 AuthMsg authMsg = (AuthMsg) msg;
+                DBService dbService = new DBService();
+                dbService.connect();
+                dbService.createTable();
+
                 String login = authMsg.getLogin();
                 byte[] password = authMsg.getPassword();
+
+                int userId = 0;
+                if (dbService.userExists(login)) {
+                    userId = dbService.getUserId(login);
+                }
                 System.out.println(login);
                 System.out.println(Arrays.toString(password));
+                // System.out.println(Arrays.toString(Passwords.dbService.getPassword(login)));
                 //TODO получаем id пользователя из базы
-                int userId = 1;
-                if (userId > 0){
+                System.out.println(userId);
+
+                if (Passwords.isPasswordsEquals(password, dbService.getPassword(login))) {
                     authorized = true;
                     ResponseMsg responseMsg = new ResponseMsg(authMsg.getLogin(), Command.AUTH_OK);
                     responseMsg.setUserId(userId);
@@ -46,4 +57,8 @@ public class AuthGatewayHandler extends ChannelInboundHandlerAdapter {
         }
     }
 
+    @Override
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        super.channelActive(ctx);
+    }
 }

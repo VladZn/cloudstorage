@@ -44,4 +44,12 @@ public class Passwords {
         }
         return true;
     }
+
+    public static boolean isPasswordsEquals(byte[] pwdHash, byte[] dbPwdHash) {
+        if (pwdHash.length != dbPwdHash.length) return false;
+        for (int i = 0; i < pwdHash.length; i++) {
+            if (pwdHash[i] != dbPwdHash[i]) return false;
+        }
+        return true;
+    }
 }

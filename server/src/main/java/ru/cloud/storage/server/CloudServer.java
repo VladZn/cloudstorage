@@ -20,8 +20,8 @@ import java.util.Properties;
 public class CloudServer {
     private String host;
     private int port;
-    private int MAX_OBJ_SIZE = 1024 * 1024 * 1000;
     private Path folder;
+    private static final int MAX_OBJ_SIZE = 1024 * 1024 * 10;
 
     public CloudServer() {
     }
