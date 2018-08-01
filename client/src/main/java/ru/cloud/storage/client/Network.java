@@ -44,10 +44,13 @@ public class Network {
                         }
                     } else if (inboundMsg instanceof FileListMsg) {
                         FileListMsg fileListMsg = (FileListMsg) inboundMsg;
-                        System.out.println(fileListMsg.getFileList());
+                        System.out.println("cmd = " + fileListMsg.getCmd());
+                        System.out.println("FileList: " + fileListMsg.getFileList());
                     } else if (inboundMsg instanceof FileMsg) {
                         FileMsg fileMsg = (FileMsg) inboundMsg;
                         Path path = Paths.get("C:\\Temp\\", fileMsg.getFileName());
+                        System.out.println("cmd = " + fileMsg.getCmd());
+                        System.out.println("File: " + fileMsg.getFileName());
                         Files.write(path, fileMsg.getFileBinary());
                     }
                 } catch (IOException e) {

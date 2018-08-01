@@ -24,7 +24,7 @@ public class ScreenManager {
             try {
                 Parent root = FXMLLoader.load(ScreenManager.class.getResource("/Login.fxml"));
                 stage.setTitle("Sign in");
-                stage.setScene(new Scene(root, 300, 275));
+                stage.setScene(new Scene(root));
                 stage.setResizable(false);
                 stage.show();
             } catch (IOException e) {
