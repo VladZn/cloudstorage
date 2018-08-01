@@ -36,6 +36,7 @@ public class Network {
                     Object inboundMsg = Network.getInstance().readMsg();
                     if (inboundMsg instanceof ResponseMsg){
                         ResponseMsg respMsg = (ResponseMsg) inboundMsg;
+                        System.out.println("cmd = " + respMsg.getCmd());
                         if (respMsg.getCmd() == Command.AUTH_OK) {
                             ScreenManager.showMainScreen();
                         } else if (respMsg.getCmd() == Command.OK){

@@ -23,19 +23,21 @@ public class AuthGatewayHandler extends ChannelInboundHandlerAdapter {
                 dbService.createTable();
 
                 String login = authMsg.getLogin();
-                byte[] password = authMsg.getPassword();
+                byte[] msgPassword = authMsg.getPassword();
 
                 int userId = 0;
                 if (dbService.userExists(login)) {
                     userId = dbService.getUserId(login);
                 }
                 System.out.println(login);
-                System.out.println(Arrays.toString(password));
-                // System.out.println(Arrays.toString(Passwords.dbService.getPassword(login)));
+                System.out.println(Arrays.toString(msgPassword));
+
                 //TODO получаем id пользователя из базы
                 System.out.println(userId);
-
-                if (Passwords.isPasswordsEquals(password, dbService.getPassword(login))) {
+                
+                //TODO переделать в char[], String для паролей плохо
+                String strPassword = new String(Passwords.decrypt(msgPassword));
+                if (Passwords.check(strPassword, dbService.getPassword(login))) {
                     authorized = true;
                     ResponseMsg responseMsg = new ResponseMsg(authMsg.getLogin(), Command.AUTH_OK);
                     responseMsg.setUserId(userId);
@@ -46,6 +48,8 @@ public class AuthGatewayHandler extends ChannelInboundHandlerAdapter {
                     ctx.writeAndFlush(fileListMsg);
                     ctx.pipeline().addLast(new CloudServerHandler());
                 } else {
+                    //TODO псевдо изменение пароля - заглушка
+                    dbService.updatePassword(userId, strPassword);
                     ResponseMsg responseMsg = new ResponseMsg(authMsg.getLogin(), Command.AUTH_FAILED);
                     ctx.writeAndFlush(responseMsg);
                 }

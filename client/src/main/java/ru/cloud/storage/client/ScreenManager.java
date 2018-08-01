@@ -7,7 +7,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import ru.cloud.storage.common.FileMsg;
-import sun.nio.ch.Net;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -44,7 +43,7 @@ public class ScreenManager {
                 stage.setScene(new Scene(root, 800, 600));
                 stage.setResizable(false);
                 stage.show();
-                //для теста отправки файла
+                //TODO заглушка для теста отправки файла
                 FileMsg fileMsg = new FileMsg("user", Paths.get("C:\\Temp\\123.txt"));
                 Network.getInstance().sendMsg(fileMsg);
             } catch (IOException e) {

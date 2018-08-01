@@ -33,17 +33,12 @@
                                 <Font name="System Bold" size="14.0"/>
                             </font>
                         </Label>
-                        <TableView VBox.vgrow="ALWAYS">
-                            <columns>
-                                <TableColumn prefWidth="75.0" text="C1"/>
-                                <TableColumn prefWidth="75.0" text="C2"/>
-                            </columns>
-                        </TableView>
+                        <TableView fx:id="localFilesTableView" VBox.vgrow="ALWAYS"/>
                         <HBox>
                             <children>
-                                <Button mnemonicParsing="false" text="Upload" maxWidth="Infinity"/>
-                                <Button mnemonicParsing="false" text="Rename" maxWidth="Infinity"/>
-                                <Button mnemonicParsing="false" text="Delete" maxWidth="Infinity"/>
+                                <Button maxWidth="Infinity" mnemonicParsing="false" text="Upload"/>
+                                <Button maxWidth="Infinity" mnemonicParsing="false" text="Rename"/>
+                                <Button maxWidth="Infinity" mnemonicParsing="false" text="Delete"/>
                             </children>
                         </HBox>
                     </children>
@@ -55,7 +50,7 @@
                                 <Font name="System Bold" size="14.0"/>
                             </font>
                         </Label>
-                        <TableView VBox.vgrow="ALWAYS">
+                        <TableView fx:id="cloudFilesTableView" VBox.vgrow="ALWAYS">
                             <columns>
                                 <TableColumn prefWidth="75.0" text="C1"/>
                                 <TableColumn prefWidth="75.0" text="C2"/>
@@ -63,9 +58,9 @@
                         </TableView>
                         <HBox>
                             <children>
-                                <Button mnemonicParsing="false" text="Download" maxWidth="Infinity"/>
-                                <Button mnemonicParsing="false" text="Rename" maxWidth="Infinity"/>
-                                <Button mnemonicParsing="false" text="Delete" maxWidth="Infinity"/>
+                                <Button maxWidth="Infinity" mnemonicParsing="false" text="Download"/>
+                                <Button maxWidth="Infinity" mnemonicParsing="false" text="Rename"/>
+                                <Button maxWidth="Infinity" mnemonicParsing="false" text="Delete"/>
                             </children>
                         </HBox>
                     </children>

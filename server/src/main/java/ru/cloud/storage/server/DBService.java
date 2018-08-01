@@ -6,7 +6,7 @@ import java.sql.*;
 import java.util.Properties;
 
 public class DBService {
-    static Connection connection = null;
+    private static Connection connection = null;
     private String dbServer;
     private int dbPort;
     private String dbName;
@@ -87,11 +87,11 @@ public class DBService {
         return rs.getInt("id");
     }
 
-    byte[] getPassword(String login) throws SQLException {
+    String getPassword(String login) throws SQLException {
         PreparedStatement ps = connection.prepareStatement("SELECT password FROM cloudstorage.users WHERE users.username = ?");
         ps.setString(1, login);
         ResultSet rs = ps.executeQuery();
         rs.next();
-        return rs.getBytes("password");
+        return rs.getString("password");
     }
 }
