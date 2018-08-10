@@ -43,7 +43,7 @@ public class AuthGatewayHandler extends ChannelInboundHandlerAdapter {
                     responseMsg.setUserId(userId);
                     ctx.writeAndFlush(responseMsg);
                     //TODO отправка списка файлов без родительского каталога пользователя на сервере
-                    FileListMsg fileListMsg = new FileListMsg(authMsg.getLogin());
+                    FileListMsg fileListMsg = new FileListMsg(authMsg.getLogin(), Command.OK);
                     fileListMsg.setFileList("d:\\Downloads\\AndroidPacman\\");
                     ctx.writeAndFlush(fileListMsg);
                     ctx.pipeline().addLast(new CloudServerHandler());

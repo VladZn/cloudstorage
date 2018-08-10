@@ -5,14 +5,23 @@ import io.netty.handler.codec.serialization.ObjectEncoderOutputStream;
 import ru.cloud.storage.common.*;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Properties;
 
 public class Network {
 
+    private String host;
+    private int port;
+    private Path folder;
+
     private Socket socket;
+    private String login;
+
     private ObjectDecoderInputStream inputStream;
     private ObjectEncoderOutputStream outputStream;
 
@@ -26,7 +35,8 @@ public class Network {
     }
 
     void connect() throws IOException {
-        socket = new Socket("localhost", 9999);
+        readClientProperties();
+        socket = new Socket(host, port);
         inputStream = new ObjectDecoderInputStream(socket.getInputStream());
         outputStream = new ObjectEncoderOutputStream(socket.getOutputStream());
 
@@ -38,6 +48,8 @@ public class Network {
                         ResponseMsg respMsg = (ResponseMsg) inboundMsg;
                         System.out.println("cmd = " + respMsg.getCmd());
                         if (respMsg.getCmd() == Command.AUTH_OK) {
+                            login = respMsg.getLogin();
+                            System.out.println("login: " + login);
                             ScreenManager.showMainScreen();
                         } else if (respMsg.getCmd() == Command.OK){
                             System.out.println("File successfully uploaded");
@@ -63,6 +75,18 @@ public class Network {
         thread.setDaemon(true);
         thread.start();
 
+    }
+
+    private void readClientProperties() {
+        try (Reader in = new InputStreamReader(this.getClass().getResourceAsStream("/client.properties"))) {
+            Properties properties = new Properties();
+            properties.load(in);
+            host = properties.getProperty("host");
+            port = Integer.parseInt(properties.getProperty("port"));
+            folder = Paths.get(properties.getProperty("folder"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public boolean isConnected(){

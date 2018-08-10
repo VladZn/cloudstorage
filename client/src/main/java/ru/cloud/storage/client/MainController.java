@@ -30,7 +30,7 @@ public class MainController implements Initializable {
 
     }
 
-    private void initTableView(TableView tableView) {
+    private void initTableView(TableView<FileView> tableView) {
         TableColumn<FileView, String> columnFileName = new TableColumn<>("File name");
         columnFileName.setCellValueFactory(new PropertyValueFactory<>("name"));
 

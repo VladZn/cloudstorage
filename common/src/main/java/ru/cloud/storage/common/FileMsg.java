@@ -13,10 +13,11 @@ public class FileMsg extends BaseMsg {
     private byte[] fileBinary;
     private long crc32;
 
-    public FileMsg(String login, Path path) throws IOException {
+    public FileMsg(String login, Path path, Command cmd) throws IOException {
         super(login);
-        setFileName(path.toString());
+        setFileName(path.getFileName().toString());
         setFileBinary(path);
+        setCmd(cmd);
     }
 
     public String getFileName() {
