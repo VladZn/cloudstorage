@@ -14,7 +14,7 @@ import java.nio.file.Paths;
 
 public class CloudServerHandler extends ChannelInboundHandlerAdapter {
 
-    //private File file;
+    private String rootFolder = "D:\\Geekbrains\\CloudStorageFiles\\"; //TODO получать из свойств
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
@@ -26,7 +26,7 @@ public class CloudServerHandler extends ChannelInboundHandlerAdapter {
             if (msg instanceof FileMsg) {
                 FileMsg fileMsg= (FileMsg) msg;
                 //TODO получать каталог пользователя по логину
-                Path path = Paths.get("D:\\Geekbrains\\CloudStorageFiles\\" + fileMsg.getLogin(), fileMsg.getFileName());
+                Path path = Paths.get(rootFolder + fileMsg.getLogin(), fileMsg.getFileName());
                 if (fileMsg.getCmd() == Command.PUT_FILE){
                     Files.write(path, fileMsg.getFileBinary());
                     ResponseMsg responseMsg = new ResponseMsg(fileMsg.getLogin(), Command.OK);
@@ -39,10 +39,15 @@ public class CloudServerHandler extends ChannelInboundHandlerAdapter {
                     } else {
                         fileMsg.setCmd(Command.NO_SUCH_FILE);
                     }
+                } else if (fileMsg.getCmd() == Command.DELETE_FILE) {
+                    Files.deleteIfExists(path);
+                    FileListMsg fileListMsg = new FileListMsg(fileMsg.getLogin(), Command.GET_FILELIST);
+                    fileListMsg.setFileList(rootFolder + fileMsg.getLogin());
+                    ctx.writeAndFlush(fileListMsg);
                 }
             } else if (msg instanceof FileListMsg) {
                 FileListMsg fileListMsg = (FileListMsg) msg;
-                fileListMsg.setFileList("D:\\Geekbrains\\CloudStorageFiles\\" + fileListMsg.getLogin());
+                fileListMsg.setFileList(rootFolder + fileListMsg.getLogin());
                 fileListMsg.setCmd(Command.OK);
                 ctx.writeAndFlush(fileListMsg);
             } else {

@@ -54,7 +54,8 @@ public class Network {
                             System.out.println("login: " + login);
                             ScreenManager.showMainScreen();
                         } else if (respMsg.getCmd() == Command.OK){
-                            System.out.println("File successfully uploaded");
+                            System.out.println("File successfully uploaded/deleted");
+                            //mainController.refreshCloudFilesList(fileListMsg);
                         }
                     } else if (inboundMsg instanceof FileListMsg) {
                         FileListMsg fileListMsg = (FileListMsg) inboundMsg;

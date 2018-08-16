@@ -34,13 +34,14 @@
                                 <Font name="System Bold" size="14.0"/>
                             </font>
                         </Label>
-                        <TableView fx:id="localFilesTableView" VBox.vgrow="ALWAYS"/>
+                        <TableView fx:id="localFilesTableView" onDragDropped="#LocalFilesTableOnDragDropped"
+                                   onDragOver="#LocalFilesTableOnDragOver" VBox.vgrow="ALWAYS"/>
                         <HBox>
                             <children>
                                 <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#btnUploadAction"
                                         text="Upload"/>
-                                <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#btnRenameLocalFileAction"
-                                        text="Rename"/>
+                                <Button disable="true" maxWidth="Infinity" mnemonicParsing="false"
+                                        onAction="#btnRenameLocalFileAction" text="Rename"/>
                                 <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#btnDeleteLocalFileAction"
                                         text="Delete"/>
                                 <Button fx:id="btnRefreshOnClient" mnemonicParsing="false"
@@ -61,8 +62,9 @@
                             <children>
                                 <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#btnDownload"
                                         text="Download"/>
-                                <Button maxWidth="Infinity" mnemonicParsing="false" text="Rename"/>
-                                <Button maxWidth="Infinity" mnemonicParsing="false" text="Delete"/>
+                                <Button disable="true" maxWidth="Infinity" mnemonicParsing="false" text="Rename"/>
+                                <Button fx:id="btnDeleteOnServer" maxWidth="Infinity" mnemonicParsing="false"
+                                        onAction="#btnDeleteOnServerAction" text="Delete"/>
                                 <Button fx:id="btnRefreshOnServer" mnemonicParsing="false"
                                         onAction="#btnRefreshOnServerAction" text="Refresh"/>
                             </children>

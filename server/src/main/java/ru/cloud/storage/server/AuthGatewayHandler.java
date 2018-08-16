@@ -54,7 +54,7 @@ public class AuthGatewayHandler extends ChannelInboundHandlerAdapter {
                     ctx.pipeline().addLast(new CloudServerHandler());
                 } else {
                     //TODO псевдо изменение пароля - заглушка
-                    dbService.updatePassword(userId, strPassword);
+                    //dbService.updatePassword(userId, strPassword);
                     ResponseMsg responseMsg = new ResponseMsg(authMsg.getLogin(), Command.AUTH_FAILED);
                     ctx.writeAndFlush(responseMsg);
                 }

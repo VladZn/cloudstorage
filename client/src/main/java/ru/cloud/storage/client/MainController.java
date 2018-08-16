@@ -9,6 +9,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
 import ru.cloud.storage.common.Command;
 import ru.cloud.storage.common.FileListMsg;
 import ru.cloud.storage.common.FileMsg;
@@ -18,6 +21,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
@@ -121,5 +125,34 @@ public class MainController implements Initializable {
     public void btnRefreshOnServerAction(ActionEvent actionEvent) throws IOException {
         FileListMsg msg = new FileListMsg(Network.getInstance().getLogin(), Command.GET_FILELIST);
         Network.getInstance().sendMsg(msg);
+    }
+
+    public void btnDeleteOnServerAction(ActionEvent actionEvent) throws IOException {
+        FileView fileView = cloudFilesTableView.getSelectionModel().getSelectedItem();
+        FileMsg msg = new FileMsg(Network.getInstance().getLogin(), fileView.getName(), Command.DELETE_FILE);
+        Network.getInstance().sendMsg(msg);
+    }
+
+    public void LocalFilesTableOnDragOver(DragEvent dragEvent) {
+        if (dragEvent.getGestureSource() != localFilesTableView && dragEvent.getDragboard().hasFiles()) {
+            dragEvent.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+        }
+    }
+
+    public void LocalFilesTableOnDragDropped(DragEvent dragEvent) {
+        Dragboard db = dragEvent.getDragboard();
+        boolean success = false;
+        if (db.hasFiles()) {
+            for (int i = 0; i < db.getFiles().size(); i++) {
+                try {
+                    Files.copy(Paths.get(db.getFiles().get(i).getAbsolutePath()), Paths.get(localFolder + "\\" + db.getFiles().get(i).getName()), StandardCopyOption.REPLACE_EXISTING);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            success = true;
+        }
+        dragEvent.setDropCompleted(success);
+        dragEvent.consume();
     }
 }
