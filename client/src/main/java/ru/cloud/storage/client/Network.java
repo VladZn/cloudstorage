@@ -17,13 +17,15 @@ public class Network {
 
     private String host;
     private int port;
-    private Path folder;
+    private Path localFolder; //TODO переделать в String ?
 
     private Socket socket;
     private String login;
 
     private ObjectDecoderInputStream inputStream;
     private ObjectEncoderOutputStream outputStream;
+
+    private MainController mainController;
 
     private static Network ourInstance = new Network();
 
@@ -58,9 +60,10 @@ public class Network {
                         FileListMsg fileListMsg = (FileListMsg) inboundMsg;
                         System.out.println("cmd = " + fileListMsg.getCmd());
                         System.out.println("FileList: " + fileListMsg.getFileList());
+                        mainController.refreshCloudFilesList(fileListMsg);
                     } else if (inboundMsg instanceof FileMsg) {
                         FileMsg fileMsg = (FileMsg) inboundMsg;
-                        Path path = Paths.get("C:\\Temp\\", fileMsg.getFileName());
+                        Path path = Paths.get(localFolder.toString(), fileMsg.getFileName());
                         System.out.println("cmd = " + fileMsg.getCmd());
                         System.out.println("File: " + fileMsg.getFileName());
                         Files.write(path, fileMsg.getFileBinary());
@@ -77,20 +80,24 @@ public class Network {
 
     }
 
+    public void setMainController(MainController mainController) {
+        this.mainController = mainController;
+    }
+
     private void readClientProperties() {
         try (Reader in = new InputStreamReader(this.getClass().getResourceAsStream("/client.properties"))) {
             Properties properties = new Properties();
             properties.load(in);
             host = properties.getProperty("host");
             port = Integer.parseInt(properties.getProperty("port"));
-            folder = Paths.get(properties.getProperty("folder"));
+            localFolder = Paths.get(properties.getProperty("folder"));
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public boolean isConnected(){
-        return socket != null || socket.isConnected();
+        return (socket != null) || socket.isConnected();
     }
 
     public void sendMsg(BaseMsg msg) throws IOException {
@@ -120,5 +127,13 @@ public class Network {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public Path getLocalFolder() {
+        return localFolder;
     }
 }

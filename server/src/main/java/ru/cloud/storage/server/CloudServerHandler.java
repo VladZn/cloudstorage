@@ -2,11 +2,12 @@ package ru.cloud.storage.server;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.handler.stream.ChunkedFile;
 import io.netty.util.ReferenceCountUtil;
-import ru.cloud.storage.common.*;
+import ru.cloud.storage.common.Command;
+import ru.cloud.storage.common.FileListMsg;
+import ru.cloud.storage.common.FileMsg;
+import ru.cloud.storage.common.ResponseMsg;
 
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -25,7 +26,7 @@ public class CloudServerHandler extends ChannelInboundHandlerAdapter {
             if (msg instanceof FileMsg) {
                 FileMsg fileMsg= (FileMsg) msg;
                 //TODO получать каталог пользователя по логину
-                Path path = Paths.get("D:\\Downloads\\", fileMsg.getFileName());
+                Path path = Paths.get("D:\\Geekbrains\\CloudStorageFiles\\" + fileMsg.getLogin(), fileMsg.getFileName());
                 if (fileMsg.getCmd() == Command.PUT_FILE){
                     Files.write(path, fileMsg.getFileBinary());
                     ResponseMsg responseMsg = new ResponseMsg(fileMsg.getLogin(), Command.OK);
@@ -39,6 +40,11 @@ public class CloudServerHandler extends ChannelInboundHandlerAdapter {
                         fileMsg.setCmd(Command.NO_SUCH_FILE);
                     }
                 }
+            } else if (msg instanceof FileListMsg) {
+                FileListMsg fileListMsg = (FileListMsg) msg;
+                fileListMsg.setFileList("D:\\Geekbrains\\CloudStorageFiles\\" + fileListMsg.getLogin());
+                fileListMsg.setCmd(Command.OK);
+                ctx.writeAndFlush(fileListMsg);
             } else {
                 System.out.printf("Server received wrong object!");
                 return;

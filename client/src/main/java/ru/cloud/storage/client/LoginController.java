@@ -10,6 +10,7 @@ import ru.cloud.storage.common.Passwords;
 public class LoginController {
     @FXML
     PasswordField password;
+
     @FXML
     TextField login;
 

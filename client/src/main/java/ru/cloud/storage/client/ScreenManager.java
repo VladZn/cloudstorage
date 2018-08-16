@@ -6,12 +6,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import ru.cloud.storage.common.Command;
-import ru.cloud.storage.common.FileListMsg;
-import ru.cloud.storage.common.FileMsg;
 
 import java.io.IOException;
-import java.nio.file.Paths;
 
 public class ScreenManager {
     private static Stage stage;
@@ -45,10 +41,6 @@ public class ScreenManager {
                 stage.setScene(new Scene(root, 800, 600));
                 stage.setResizable(false);
                 stage.show();
-                //TODO заглушка для теста отправки файла
-                FileMsg fileMsg = new FileMsg("user", Paths.get("C:\\Temp\\123.txt"), Command.PUT_FILE);
-                Network.getInstance().sendMsg(fileMsg);
-                FileListMsg fileListMsg = new FileListMsg("user1", Command.GET_FILELIST);
             } catch (IOException e) {
                 e.printStackTrace();
             }

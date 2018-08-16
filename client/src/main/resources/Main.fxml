@@ -3,7 +3,8 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<VBox prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
+<VBox prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="ru.cloud.storage.client.MainController">
     <children>
         <MenuBar>
             <menus>
@@ -36,9 +37,14 @@
                         <TableView fx:id="localFilesTableView" VBox.vgrow="ALWAYS"/>
                         <HBox>
                             <children>
-                                <Button maxWidth="Infinity" mnemonicParsing="false" text="Upload"/>
-                                <Button maxWidth="Infinity" mnemonicParsing="false" text="Rename"/>
-                                <Button maxWidth="Infinity" mnemonicParsing="false" text="Delete"/>
+                                <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#btnUploadAction"
+                                        text="Upload"/>
+                                <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#btnRenameLocalFileAction"
+                                        text="Rename"/>
+                                <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#btnDeleteLocalFileAction"
+                                        text="Delete"/>
+                                <Button fx:id="btnRefreshOnClient" mnemonicParsing="false"
+                                        onAction="#btnRefreshOnClientAction" text="Refresh"/>
                             </children>
                         </HBox>
                     </children>
@@ -50,17 +56,15 @@
                                 <Font name="System Bold" size="14.0"/>
                             </font>
                         </Label>
-                        <TableView fx:id="cloudFilesTableView" VBox.vgrow="ALWAYS">
-                            <columns>
-                                <TableColumn prefWidth="75.0" text="C1"/>
-                                <TableColumn prefWidth="75.0" text="C2"/>
-                            </columns>
-                        </TableView>
+                        <TableView fx:id="cloudFilesTableView" VBox.vgrow="ALWAYS"/>
                         <HBox>
                             <children>
-                                <Button maxWidth="Infinity" mnemonicParsing="false" text="Download"/>
+                                <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#btnDownload"
+                                        text="Download"/>
                                 <Button maxWidth="Infinity" mnemonicParsing="false" text="Rename"/>
                                 <Button maxWidth="Infinity" mnemonicParsing="false" text="Delete"/>
+                                <Button fx:id="btnRefreshOnServer" mnemonicParsing="false"
+                                        onAction="#btnRefreshOnServerAction" text="Refresh"/>
                             </children>
                         </HBox>
                     </children>

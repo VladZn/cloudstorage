@@ -20,11 +20,17 @@ public class FileMsg extends BaseMsg {
         setCmd(cmd);
     }
 
+    public FileMsg(String login, String fileName, Command cmd) {
+        super(login);
+        setFileName(fileName);
+        setCmd(cmd);
+    }
+
     public String getFileName() {
         return fileName;
     }
 
-    public void setFileName(String fileName) {
+    private void setFileName(String fileName) {
         this.fileName = fileName;
     }
 
