@@ -43,7 +43,7 @@ public class Network {
         outputStream = new ObjectEncoderOutputStream(socket.getOutputStream());
 
         Thread thread = new Thread(()->{
-            while (true){
+            while (!Thread.currentThread().isInterrupted()) {
                 try {
                     Object inboundMsg = Network.getInstance().readMsg();
                     if (inboundMsg instanceof ResponseMsg){
@@ -68,6 +68,7 @@ public class Network {
                         System.out.println("cmd = " + fileMsg.getCmd());
                         System.out.println("File: " + fileMsg.getFileName());
                         Files.write(path, fileMsg.getFileBinary());
+                        mainController.refreshLocalFilesList(localFolder.toString());
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -101,12 +102,12 @@ public class Network {
         return (socket != null) || socket.isConnected();
     }
 
-    public void sendMsg(BaseMsg msg) throws IOException {
+    void sendMsg(BaseMsg msg) throws IOException {
         outputStream.writeObject(msg);
         outputStream.flush();
     }
 
-    public Object readMsg() throws IOException, ClassNotFoundException {
+    Object readMsg() throws IOException, ClassNotFoundException {
         return inputStream.readObject();
     }
 
@@ -130,11 +131,11 @@ public class Network {
         }
     }
 
-    public String getLogin() {
+    String getLogin() {
         return login;
     }
 
-    public Path getLocalFolder() {
+    Path getLocalFolder() {
         return localFolder;
     }
 }

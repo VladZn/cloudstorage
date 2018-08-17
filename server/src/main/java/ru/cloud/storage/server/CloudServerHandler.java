@@ -6,7 +6,6 @@ import io.netty.util.ReferenceCountUtil;
 import ru.cloud.storage.common.Command;
 import ru.cloud.storage.common.FileListMsg;
 import ru.cloud.storage.common.FileMsg;
-import ru.cloud.storage.common.ResponseMsg;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -29,8 +28,11 @@ public class CloudServerHandler extends ChannelInboundHandlerAdapter {
                 Path path = Paths.get(rootFolder + fileMsg.getLogin(), fileMsg.getFileName());
                 if (fileMsg.getCmd() == Command.PUT_FILE){
                     Files.write(path, fileMsg.getFileBinary());
-                    ResponseMsg responseMsg = new ResponseMsg(fileMsg.getLogin(), Command.OK);
-                    ctx.writeAndFlush(responseMsg);
+                    //ResponseMsg responseMsg = new ResponseMsg(fileMsg.getLogin(), Command.OK);
+                    FileListMsg fileListMsg = new FileListMsg(fileMsg.getLogin(), Command.GET_FILELIST);
+                    fileListMsg.setFileList(rootFolder + fileMsg.getLogin());
+                    //ctx.writeAndFlush(responseMsg);
+                    ctx.writeAndFlush(fileListMsg);
                 } else if (fileMsg.getCmd() == Command.GET_FILE){
                     if (Files.exists(path)) {
                         fileMsg.setFileBinary(path);

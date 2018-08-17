@@ -49,7 +49,7 @@ public class MainController implements Initializable {
         cloudFilesTableView.setItems(cloudFilesList);
 
         localFolder = Network.getInstance().getLocalFolder().toString();
-        refreshFileList(localFilesList, localFolder);
+        refreshLocalFilesList(localFolder);
         Network.getInstance().setMainController(this);
         FileListMsg fileListMsg = new FileListMsg(Network.getInstance().getLogin(), Command.GET_FILELIST);
         try {
@@ -59,10 +59,10 @@ public class MainController implements Initializable {
         }
     }
 
-    private void refreshFileList(ObservableList<FileView> fileList, String s) {
-        fileList.clear();
+    void refreshLocalFilesList(String s) {
+        localFilesList.clear();
         try {
-            fileList.addAll(Files.list(Paths.get(s)).map(Path::toFile).map(FileView::new).collect(Collectors.toList()));
+            localFilesList.addAll(Files.list(Paths.get(s)).map(Path::toFile).map(FileView::new).collect(Collectors.toList()));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -108,11 +108,11 @@ public class MainController implements Initializable {
             e.printStackTrace();
         }
 
-        refreshFileList(localFilesList, localFolder);
+        refreshLocalFilesList(localFolder);
     }
 
     public void btnRefreshOnClientAction(ActionEvent actionEvent) {
-        refreshFileList(localFilesList, localFolder);
+        refreshLocalFilesList(localFolder);
     }
 
     public void btnDownload(ActionEvent actionEvent) throws IOException {
