@@ -60,12 +60,15 @@ public class MainController implements Initializable {
     }
 
     void refreshLocalFilesList(String s) {
-        localFilesList.clear();
-        try {
-            localFilesList.addAll(Files.list(Paths.get(s)).map(Path::toFile).map(FileView::new).collect(Collectors.toList()));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Platform.runLater(() -> {
+            localFilesList.clear();
+            try {
+                localFilesList.addAll(Files.list(Paths.get(s)).map(Path::toFile).map(FileView::new).collect(Collectors.toList()));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
     }
 
     void refreshCloudFilesList(FileListMsg msg) {
@@ -154,5 +157,6 @@ public class MainController implements Initializable {
         }
         dragEvent.setDropCompleted(success);
         dragEvent.consume();
+        refreshLocalFilesList(localFolder);
     }
 }
